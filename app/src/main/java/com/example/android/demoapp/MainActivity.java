@@ -2,6 +2,7 @@ package com.example.android.demoapp;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,6 +19,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mRecycler = (RecyclerView) findViewById(R.id.rv);
+
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        mRecycler.setLayoutManager(layoutManager);
+
+        mAdapter = new MainAdapter();
+        mRecycler.setAdapter(mAdapter);
+
+        mRecycler.setHasFixedSize(true);
     }
 
     @Override
