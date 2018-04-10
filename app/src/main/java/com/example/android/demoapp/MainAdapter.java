@@ -41,7 +41,11 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.DataViewHolder
 
     @Override
     public int getItemCount() {
-        return mCursor.getCount();
+        if (mCursor == null) {
+            return 0;
+        } else {
+            return mCursor.getCount();
+        }
     }
 
     public class DataViewHolder extends RecyclerView.ViewHolder {
@@ -53,6 +57,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.DataViewHolder
         }
 
         public void bind(int position) {
+            if (mCursor == null) return;
             mCursor.moveToPosition(position);
             int pm25 = mCursor.getColumnIndex(MainContract.ColumnEntries.PM25);
             int pm10 = mCursor.getColumnIndex(MainContract.ColumnEntries.PM10);

@@ -1,8 +1,10 @@
 package com.example.android.demoapp;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,10 +12,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.example.android.demoapp.data.MainContract;
 import com.example.android.demoapp.data.MainDbHelper;
 import com.example.android.demoapp.data.TestUtil;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -23,7 +28,6 @@ public class MainActivity extends AppCompatActivity {
 
     private Cursor mCursor;
 
-    private SQLiteDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,10 +38,8 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         mRecycler.setLayoutManager(layoutManager);
 
-        MainDbHelper dbHelper = new MainDbHelper(this);
-        db = dbHelper.getWritableDatabase();
+        insertFakeData();
 
-        TestUtil.insertFakeData(db);
         mCursor = getAllData();
 
         mAdapter = new MainAdapter(mCursor);
@@ -63,13 +65,17 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void insertFakeData() {
+        List<ContentValues> list = TestUtil.generateFakeData();
+        for(ContentValues cv:list){
+         Uri uri = getContentResolver().insert(MainContract.ColumnEntries.CONTENT_URI,cv );
+         if(uri != null) {
+             Toast.makeText(getBaseContext(), uri.toString(), Toast.LENGTH_LONG);
+         }
+        }
+    }
+
     public Cursor getAllData() {
-        return db.query(MainContract.ColumnEntries.TABLE_NAME,
-                null,
-                null,
-                null,
-                null,
-                null,
-                MainContract.ColumnEntries.DATETIME);
+        return null;
     }
 }
