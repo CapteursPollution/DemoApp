@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -21,6 +22,8 @@ import com.example.android.demoapp.data.TestUtil;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     private RecyclerView mRecycler;
 
@@ -38,8 +41,8 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         mRecycler.setLayoutManager(layoutManager);
 
+        getContentResolver().delete(MainContract.ColumnEntries.CONTENT_URI,null,null);
         insertFakeData();
-
         mCursor = getAllData();
 
         mAdapter = new MainAdapter(mCursor);
@@ -67,15 +70,25 @@ public class MainActivity extends AppCompatActivity {
 
     public void insertFakeData() {
         List<ContentValues> list = TestUtil.generateFakeData();
+        Uri uri;
         for(ContentValues cv:list){
-         Uri uri = getContentResolver().insert(MainContract.ColumnEntries.CONTENT_URI,cv );
-         if(uri != null) {
-             Toast.makeText(getBaseContext(), uri.toString(), Toast.LENGTH_LONG);
-         }
+         uri = getContentResolver().insert(MainContract.ColumnEntries.CONTENT_URI,cv );
+         Log.d(TAG,uri.toString());
         }
     }
 
     public Cursor getAllData() {
-        return null;
+        try {
+            return getContentResolver().query(MainContract.ColumnEntries.CONTENT_URI,
+                    null,
+                    null,
+                    null,
+                    MainContract.ColumnEntries._ID);
+
+        } catch(Exception e) {
+            Log.e(TAG, "Failed to load data");
+            e.printStackTrace();
+            return null;
+        }
     }
 }

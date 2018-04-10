@@ -3,7 +3,7 @@ package com.example.android.demoapp.data;
 import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
-import com.example.android.demoapp.data.MainContract.ColumnEntries;
+import com.example.android.demoapp.data.MainContract.ColumnEntries.*;
 import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
@@ -11,6 +11,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import static com.example.android.demoapp.data.MainContract.ColumnEntries.CONTENT_URI;
+import static com.example.android.demoapp.data.MainContract.ColumnEntries.TABLE_NAME;
 
 /**
  * Created by nrutemby on 10/04/2018.
@@ -44,8 +47,29 @@ public class Provider extends ContentProvider {
 
     @Nullable
     @Override
-    public Cursor query(@NonNull Uri uri, @Nullable String[] strings, @Nullable String s, @Nullable String[] strings1, @Nullable String s1) {
-        return null;
+    public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
+        final SQLiteDatabase db = mDbHelper.getReadableDatabase();
+
+        int match = sUriMatcher.match(uri);
+
+        Cursor retCursor;
+
+        switch (match) {
+            //Query for all concentrations
+            case ALL:
+                retCursor = db.query(TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri:" + uri);
+        }
+        retCursor.setNotificationUri(getContext().getContentResolver(), uri);
+        return retCursor;
     }
 
     @Nullable
@@ -63,10 +87,10 @@ public class Provider extends ContentProvider {
         switch (match) {
             case ALL:
                 // inserting values into concentrations table
-                long id = db.insert(ColumnEntries.TABLE_NAME,null,contentValues);
+                long id = db.insert(TABLE_NAME,null,contentValues);
                 if (id > 0) {
                     //success
-                    returnUri = ContentUris.withAppendedId(ColumnEntries.CONTENT_URI,id);
+                    returnUri = ContentUris.withAppendedId(CONTENT_URI,id);
                 } else {
                     throw new android.database.SQLException("Failed to insert row into" + uri);
                 }
@@ -79,8 +103,25 @@ public class Provider extends ContentProvider {
     }
 
     @Override
-    public int delete(@NonNull Uri uri, @Nullable String s, @Nullable String[] strings) {
-        return 0;
+    public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
+
+        final SQLiteDatabase db = mDbHelper.getWritableDatabase();
+
+        int match = sUriMatcher.match(uri);
+        int numberOfDeletedItems;
+        switch (match) {
+            case ALL:
+                numberOfDeletedItems = db.delete(TABLE_NAME,
+                        selection,
+                        selectionArgs);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+        if (numberOfDeletedItems != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        return numberOfDeletedItems;
     }
 
     @Override
