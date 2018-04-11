@@ -20,10 +20,10 @@ public class MainContract {
         public static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendEncodedPath(PATH_ALL).build();
 
-        public static final String TABLE_NAME = "concentration_pm";
+        public static final String TABLE_NAME = "Concentration_pm";
 
-        public static final String PM25 =  "pm25";
+        public static final String PM25 =  "pm2_5";
         public static final String PM10 =  "pm10";
-        public static final String DATETIME = "datetime";
+        public static final String DATETIME = "date_mesure";
     }
 }
