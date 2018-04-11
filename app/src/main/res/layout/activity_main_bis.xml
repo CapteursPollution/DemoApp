@@ -21,6 +21,13 @@
             android:text="Click search and your URL will show up here!"
             android:textSize="22sp" />
 
+        <com.github.mikephil.charting.charts.LineChart
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:id="@+id/lineChart">
+        </com.github.mikephil.charting.charts.LineChart>
+
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -34,7 +41,6 @@
                             android:id="@+id/tv_search_results_json"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Make a search!"
                             android:textSize="18sp" />
                 </ScrollView>
 
