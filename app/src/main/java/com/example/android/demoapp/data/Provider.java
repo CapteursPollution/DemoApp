@@ -3,7 +3,6 @@ package com.example.android.demoapp.data;
 import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
-import com.example.android.demoapp.data.MainContract.ColumnEntries.*;
 import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
