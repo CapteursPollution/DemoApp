@@ -32,9 +32,11 @@ public class NetworkUtils {
 
     final static String PARAM_QUERY = "filter";
 
+    final static String PARAM_ARGS = "id,gt,";
+
     public static URL buildUrl(String SearchQueryParameters) {
         Uri builtUri = Uri.parse(BASE_URL).buildUpon()
-                .appendQueryParameter(PARAM_QUERY, SearchQueryParameters)
+                .appendQueryParameter(PARAM_QUERY, PARAM_ARGS + SearchQueryParameters)
                 .build();
         URL url = null;
         try {

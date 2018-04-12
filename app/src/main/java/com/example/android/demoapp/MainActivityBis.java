@@ -32,6 +32,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.android.demoapp.network.JSONUtils;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.Legend;
@@ -44,6 +45,8 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 
 import com.example.android.demoapp.network.NetworkUtils;
+
+import org.json.JSONException;
 
 import java.io.IOException;
 import java.net.URL;
@@ -272,11 +275,10 @@ public class MainActivityBis extends AppCompatActivity implements
 
 
     @Override
-    public void onLoadFinished(Loader<String> loader, String data) {
-
+    public void onLoadFinished(Loader<String> loader, String dataJsonStr) {
+        String data = JSONUtils.getSingleDataStringFromJson(dataJsonStr);
         mLoadingIndicator.setVisibility(View.INVISIBLE);
-
-        if (null == data) {
+        if ("" == data) {
             showErrorMessage();
         } else {
             mSearchResultsTextView.setText(data);
@@ -322,4 +324,5 @@ public class MainActivityBis extends AppCompatActivity implements
         mSearchResultsTextView.setVisibility(View.INVISIBLE);
         mErrorMessageDisplay.setVisibility(View.VISIBLE);
     }
+
 }
