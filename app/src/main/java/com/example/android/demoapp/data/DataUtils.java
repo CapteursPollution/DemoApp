@@ -2,7 +2,6 @@ package com.example.android.demoapp.data;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
 
@@ -12,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class TestUtil {
+public class DataUtils {
 
     private static List<ContentValues> generateFakeData(){
         //create a list of fake concentration
@@ -30,7 +29,7 @@ public class TestUtil {
 
     public static void insertFakeData(Context context) {
         context.getContentResolver().delete(MainContract.ColumnEntries.CONTENT_URI,null,null);
-        List<ContentValues> list = TestUtil.generateFakeData();
+        List<ContentValues> list = DataUtils.generateFakeData();
         Uri uri;
         for(ContentValues cv:list){
             uri = context.getContentResolver().insert(MainContract.ColumnEntries.CONTENT_URI,cv );

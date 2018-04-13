@@ -15,7 +15,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import com.example.android.demoapp.data.MainContract;
-import com.example.android.demoapp.data.TestUtil;
+import com.example.android.demoapp.data.DataUtils;
 
 
 public class MainActivity extends AppCompatActivity implements android.support.v4.app.LoaderManager.LoaderCallbacks<Cursor> {
@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements android.support.v
         mLoadingIndicator.getProgressDrawable();
         switch (id) {
             case ID_CURSOR_LOADER:
-                TestUtil.insertFakeData(this);
+                DataUtils.insertFakeData(this);
                 return new android.support.v4.content.CursorLoader(this,
                         MainContract.ColumnEntries.CONTENT_URI,
                         null,
