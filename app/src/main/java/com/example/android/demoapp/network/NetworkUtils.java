@@ -25,7 +25,7 @@ import java.net.URL;
 import java.util.Scanner;
 
 
-public class NetworkUtils {
+public final class NetworkUtils {
 
     final static String BASE_URL =
             "http://192.168.4.1/Concentration_pm";

@@ -17,19 +17,20 @@ import com.example.android.demoapp.data.MainContract;
 
 public class MainAdapter extends RecyclerView.Adapter<MainAdapter.DataViewHolder> {
 
+    private Context mContext;
+
     private String TAG = MainAdapter.class.getSimpleName();
 
     private Cursor mCursor;
 
-    public MainAdapter(Cursor cursor) {
-        mCursor = cursor;
+    public MainAdapter(Context context) {
+        mContext = context;
     }
 
     @Override
     public DataViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
-        LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.list_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.list_item, parent, false);
         return new DataViewHolder(view);
     }
 
@@ -48,6 +49,11 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.DataViewHolder
         }
     }
 
+    public void swapCursor (Cursor cursor) {
+        mCursor = cursor;
+        notifyDataSetChanged();
+    }
+
     public class DataViewHolder extends RecyclerView.ViewHolder {
         private TextView textView;
 
@@ -64,7 +70,9 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.DataViewHolder
             textView.setText("pm25: " +
                             mCursor.getString(pm25)  +
                             " pm10: " +
-                            mCursor.getString(pm10));
+                            mCursor.getString(pm10) +
+                            "   #" +
+                            position);
         }
     }
 }

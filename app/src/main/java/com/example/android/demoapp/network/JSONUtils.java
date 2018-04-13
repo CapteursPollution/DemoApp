@@ -17,20 +17,53 @@
  */
 package com.example.android.demoapp.network;
 
-import android.content.ContentValues;
-import android.content.Context;
-
-import com.example.android.demoapp.data.MainContract;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 
 public final class JSONUtils {
 
 
-    public static String[] getDataStringsFromJson(String DataJsonStr)
+    public static final String getSimpleDataStringFromJson(String DataJsonStr) {
+        String singleDataString = "";
+        try {
+            ArrayList<String[]> dataList = getDataStringsFromJson(DataJsonStr);
+            for (String[] dataStrings: dataList) {
+                singleDataString = singleDataString +
+                        dataStrings[0] + " - " +
+                        dataStrings[1] + " (pm25) - " +
+                        dataStrings[2] + " (pm10)" +
+                        "\n\n";
+            }
+            return singleDataString;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return singleDataString;
+        }
+    }
+
+    public static final ArrayList<Float[]> getPMDataFromJson(String DataJsonStr) {
+        ArrayList<Float[]> pmDataList = new ArrayList<>();
+        try {
+            ArrayList<String[]> dataList = getDataStringsFromJson(DataJsonStr);
+            for (String[] dataStrings: dataList) {
+                Float pm25 = Float.parseFloat(dataStrings[1]);
+                Float pm10 = Float.parseFloat(dataStrings[2]);
+                pmDataList.add(new Float[]{pm25,pm10});
+            }
+            return pmDataList;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return pmDataList;
+        }
+
+    }
+
+    private static ArrayList<String[]> getDataStringsFromJson(String DataJsonStr)
             throws JSONException {
 
         final String CONCENTRATION_PM = "Concentration_pm";
@@ -43,7 +76,13 @@ public final class JSONUtils {
         String pm25;
         String pm10;
 
-        JSONObject dataJson = new JSONObject(DataJsonStr);
+        JSONObject dataJson;
+
+        if(DataJsonStr != null) {
+            dataJson = new JSONObject(DataJsonStr);
+        } else {
+            dataJson = new JSONObject();
+        }
 
         JSONObject concentration_table = dataJson.getJSONObject(CONCENTRATION_PM);
 
@@ -55,35 +94,19 @@ public final class JSONUtils {
 
         JSONArray rowsArray = concentration_table.getJSONArray(ROWS_LIST);
 
-        String[] parsedData = new String[rowsArray.length()];
+        ArrayList<String[]> parsedData = new ArrayList<>(rowsArray.length());
 
-        for (int i = 0; i < parsedData.length; i++) {
+        for (int i = 0; i < rowsArray.length(); i++) {
 
             JSONArray measureArray = rowsArray.getJSONArray(i);
-            System.out.println(measureArray);
-
             date_measure = measureArray.getString(date_measure_index);
             pm25 = measureArray.getString(pm25_index);
             pm10 = measureArray.getString(pm10_index);
 
-            parsedData[i] = date_measure + " - " + pm25 + " (pm25) - " + pm10 + " (pm10)";
+            parsedData.add(new String[]{date_measure, pm25, pm10});
         }
 
         return parsedData;
-    }
-
-    public static String getSingleDataStringFromJson(String DataJsonStr) {
-        String singleDataString = "";
-        try {
-            String[] dataStrings = getDataStringsFromJson(DataJsonStr);
-            for (String s : dataStrings) {
-                singleDataString = singleDataString + s + "\n\n";
-            }
-            return singleDataString;
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return singleDataString;
-        }
     }
 
     private static final int getIndex(JSONArray jsonArray, String string) {
@@ -91,7 +114,6 @@ public final class JSONUtils {
         int size = jsonArray.length();
         try {
             while (!jsonArray.getString(i).equals(string)) {
-                System.out.println("Test");
                 if ( i == size-1) {
                      return -2;
                 } else {

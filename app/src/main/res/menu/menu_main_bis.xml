@@ -8,4 +8,8 @@
         app:showAsAction="ifRoom"
         android:title="@string/search"/>
 
+    <item android:id="@+id/storage"
+        android:title="@string/storage"
+        app:showAsAction="ifRoom"></item>
+
 </menu>
